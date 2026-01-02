@@ -1,14 +1,5 @@
-import React from 'react';
-  
-  const Assets = () =>  {
-	return (
-	  <div>
-	  </div>
-	);
-  }
-  
-  export default Assets;
-  import logo from './logo.svg'
+
+import logo from './logo.svg'
 import marvelLogo from './marvelLogo.svg'
 import googlePlay from './googlePlay.svg'
 import appStore from './appStore.svg'

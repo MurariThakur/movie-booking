@@ -16,5 +16,9 @@
 body{
   color:white;
   background-color: #09090B;
-   overflow-x: hidden;
+  overflow-x: hidden;
+}
+
+.no-scrollbar{
+  scrollbar-width: none;
 }

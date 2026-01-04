@@ -20,8 +20,7 @@ const MovieCard = ({ movie }) => {
         {movie.genres
           .slice(0, 2)
           .map((genre) => genre.name)
-          .join(" | ")}
-        - {TimeFormat(movie.runtime)}
+          .join(" | ")} - {TimeFormat(movie.runtime)}
       </p>
 
       <div className="flex items-center justify-between mt-4 pb-3">

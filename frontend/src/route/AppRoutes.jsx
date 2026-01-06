@@ -8,6 +8,11 @@ import Movies from "../pages/Movies";
 import MovieDetails from "../pages/MovieDetails";
 import MainLayout from "../pages/MainLayout";
 import NotFound from "../pages/NotFound";
+import AdminLayout from "../pages/admin/Layout";
+import AddShows from "../pages/admin/AddShow";
+import ListBookings from "../pages/admin/ListBookings";
+import ListShows from "../pages/admin/ListShow";
+import Dashboard from "../pages/admin/Dashboard";
 const AppRoutes = () => {
   return (
     <>
@@ -19,9 +24,14 @@ const AppRoutes = () => {
           <Route path="/movies/:id/:date" element={<SeatLayout />} />
           <Route path="/my-bookings" element={<MyBookings />} />
           <Route path="/favorite" element={<Favourite />} />
-         
         </Route>
-         <Route path="*" element={<NotFound />} />
+        <Route path="/admin/" element={<AdminLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="add-shows" element={<AddShows />} />
+          <Route path="list-bookings" element={<ListBookings />} />
+          <Route path="list-shows" element={<ListShows />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

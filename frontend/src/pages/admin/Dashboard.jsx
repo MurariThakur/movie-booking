@@ -21,7 +21,6 @@ const Dashboard = () => {
     totalRevenue: 0,
     totalUser: 0,
   });
-  console.log(dashboardData.totalUser);
   const dashbaordCard = [
     {
       title: "Total Booking",

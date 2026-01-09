@@ -133,6 +133,22 @@ const getShows = async (req, res) => {
   }
 };
 
+const getAllShows = async (req, res) => {
+  try {
+    const shows = await Show.find({})
+      .populate("movie")
+      .sort({ showDateTime: -1 });
+
+    res.json({
+      success: true,
+      shows: shows,
+    });
+  } catch (error) {
+    console.error("Error in getAllShows:", error);
+    res.json({ success: false, error: error.message });
+  }
+};
+
 const getShow = async (req, res) => {
   try {
     const { movieId } = req.params;
@@ -161,4 +177,4 @@ const getShow = async (req, res) => {
   }
 };
 
-export { getNowPlayingMovies, addShow, getShows, getShow };
+export { getNowPlayingMovies, addShow, getShows, getShow, getAllShows };

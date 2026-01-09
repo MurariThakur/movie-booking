@@ -10,7 +10,6 @@ import toast from "react-hot-toast";
 
 const AddShow = () => {
   const { user, axios, getToken, Movie_Url } = useAppContext();
-  console.log("sds", Movie_Url);
   const currency = import.meta.env.VITE_CURRENCY;
   const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);

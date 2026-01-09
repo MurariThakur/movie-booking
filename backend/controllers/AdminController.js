@@ -1,5 +1,6 @@
 import Show from "../models/Show.js";
 import Booking from "../models/Booking.js";
+import User from "../models/user.js";
 
 const isAdmin = (req, res) => {
   res.json({ success: true, isAdmin: true });
@@ -11,7 +12,7 @@ const getDashboardData = async (req, res) => {
       showDateTime: { $gte: new Date() },
     }).populate("movie");
     const bookings = await Booking.find({}).populate("show");
-    totalUser = await User.countDocuments();
+    const totalUser = await User.countDocuments();
 
     const dashboardData = {
       totalBooking: bookings.length,
@@ -19,8 +20,8 @@ const getDashboardData = async (req, res) => {
         (total, booking) => total + booking.amount,
         0
       ),
-      totalUser: totalUser,
-      show: activeShows,
+      totalUser,
+      activeShows,
     };
     res.json({ success: true, dashboardData });
   } catch (error) {
@@ -60,10 +61,4 @@ const getAllBookings = async (req, res) => {
   }
 };
 
-
-export {
-  isAdmin,
-  getDashboardData,
-  getAllShows,
-  getAllBookings,
-};
+export { isAdmin, getDashboardData, getAllShows, getAllBookings };

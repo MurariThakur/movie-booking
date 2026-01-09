@@ -25,40 +25,64 @@ const addShow = async (req, res) => {
   try {
     const { movieId, showPrice, showInput } = req.body;
 
-    let movie = await Movie.findById(movieId);
+    // Extract movie ID from the movie object
+    const movieIdValue = typeof movieId === 'object' ? movieId.id : movieId;
+    
+    let movie = await Movie.findById(movieIdValue);
     if (!movie) {
-      const [movieDetailsResonse, movieCreditsResponse] = await Promise.all([
-        axios.get(`https://api.themoviedb.org/3/movie/${movieId}`, {
-          headers: {
-            Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-          },
-        }),
-        axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits`, {
-          headers: {
-            Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-          },
-        }),
-      ]);
+      // If movieId is the full movie object, use it to create the movie
+      if (typeof movieId === 'object' && movieId.id) {
+        const movieDetails = {
+          _id: movieId.id.toString(),
+          title: movieId.title,
+          overview: movieId.overview,
+          poster_path: movieId.poster_path,
+          backdrop_path: movieId.backdrop_path,
+          genres: movieId.genre_ids || [],
+          casts: [],
+          release_date: movieId.release_date,
+          original_language: movieId.original_language,
+          tagline: movieId.tagline || "",
+          vote_average: movieId.vote_average,
+          vote_count: movieId.vote_count,
+          runtime: movieId.runtime || 0,
+        };
+        movie = await Movie.create(movieDetails);
+      } else {
+        // Fallback: fetch from TMDB API if only ID is provided
+        const [movieDetailsResonse, movieCreditsResponse] = await Promise.all([
+          axios.get(`https://api.themoviedb.org/3/movie/${movieIdValue}`, {
+            headers: {
+              Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+            },
+          }),
+          axios.get(`https://api.themoviedb.org/3/movie/${movieIdValue}/credits`, {
+            headers: {
+              Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+            },
+          }),
+        ]);
 
-      const movieDetailsData = movieDetailsResonse.data;
-      const movieCreditData = movieCreditsResponse.data;
+        const movieDetailsData = movieDetailsResonse.data;
+        const movieCreditData = movieCreditsResponse.data;
 
-      const movieDetails = {
-        _id: movieDetailsData.id,
-        title: movieDetailsData.title,
-        overview: movieDetailsData.overview,
-        poster_path: movieDetailsData.poster_path,
-        backdrop_path: movieDetailsData.backdrop_path,
-        casts: movieCreditData.cast,
-        release_date: movieDetailsData.release_date,
-        original_language: movieDetailsData.original_language,
-        tagline: movieDetailsData.tagline || "",
-        vote_average: movieDetailsData.vote_average,
-        vote_count: movieDetailsData.vote_count,
-        runtime: movieDetailsData.runtime,
-      };
-
-      movie = await Movie.create(movieDetails);
+        const movieDetails = {
+          _id: movieDetailsData.id.toString(),
+          title: movieDetailsData.title,
+          overview: movieDetailsData.overview,
+          poster_path: movieDetailsData.poster_path,
+          backdrop_path: movieDetailsData.backdrop_path,
+          genres: movieDetailsData.genres || [],
+          casts: movieCreditData.cast,
+          release_date: movieDetailsData.release_date,
+          original_language: movieDetailsData.original_language,
+          tagline: movieDetailsData.tagline || "",
+          vote_average: movieDetailsData.vote_average,
+          vote_count: movieDetailsData.vote_count,
+          runtime: movieDetailsData.runtime,
+        };
+        movie = await Movie.create(movieDetails);
+      }
     }
 
     const showToCreate = [];
@@ -67,7 +91,7 @@ const addShow = async (req, res) => {
       show.time.forEach((time) => {
         const dateTimeString = `${showDate}T${time}`;
         showToCreate.push({
-          movie: movieId,
+          movie: movieIdValue.toString(),
           showDateTime: new Date(dateTimeString),
           showPrice,
           occupiedSeats: {},

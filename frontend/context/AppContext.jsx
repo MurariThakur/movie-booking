@@ -12,6 +12,7 @@ export const AppProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(null);
   const [shows, setShows] = useState([]);
   const [favoritesMovies, setFavoritesMovies] = useState([]);
+  const Movie_Url = import.meta.env.VITE_MOVIE_BASE_URL;
 
   const { user } = useUser();
 
@@ -90,6 +91,10 @@ export const AppProvider = ({ children }) => {
         fetchFavoriteMovies,
         fetchIsAdmin,
         user,
+        Movie_Url,
+        getToken,
+        setShows,
+        axios,
       }}
     >
       {children}

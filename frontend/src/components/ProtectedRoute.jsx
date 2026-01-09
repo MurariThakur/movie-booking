@@ -1,8 +1,8 @@
-import { useAppContext } from '../../context/AppContext';
-import { Navigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { useEffect, useRef } from 'react';
-import Loading from './Loading';
+import { useAppContext } from "../../context/AppContext";
+import { Navigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useEffect, useRef } from "react";
+import Loading from "./Loading";
 
 const ProtectedRoute = ({ children }) => {
   const { isAdmin } = useAppContext();
@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (isAdmin === null) return <Loading />;
   if (isAdmin === false) return <Navigate to="/" replace />;
-  
+
   return children;
 };
 

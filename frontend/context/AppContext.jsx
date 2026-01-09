@@ -17,10 +17,6 @@ export const AppProvider = ({ children }) => {
 
   const { getToken } = useAuth();
 
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  // 🔐 ADMIN CHECK
   const fetchIsAdmin = async () => {
     try {
       const token = await getToken({ template: "integration" });
@@ -42,7 +38,6 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // 🎬 SHOWS
   const fetchShows = async () => {
     try {
       const { data } = await axios.get("/api/show/all");
@@ -56,7 +51,6 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // ❤️ FAVORITES
   const fetchFavoriteMovies = async () => {
     try {
       const token = await getToken({ template: "integration" });

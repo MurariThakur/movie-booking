@@ -4,20 +4,44 @@ import Loading from "../components/Loading";
 import BlurCircle from "../components/BlurCircle";
 import TimeFormat from "../libs/TimeFormat";
 import { DateFormat } from "../libs/DateFormat";
+import { useAppContext } from "../../context/AppContext";
 
 const MyBookings = () => {
+  const {
+      Movie_Url,
+      axios,
+      getToken,
+      user,
+    } = useAppContext();
   const currency = import.meta.env.VITE_CURRENCY;
   const [booking, setbooking] = useState([]);
   const [isLoading, setisLoading] = useState(true);
 
   const getMyBooking = async () => {
-    setbooking(dummyBookingData);
+    try {
+      setisLoading(true);
+      const token = await getToken({ template: "integration" });
+      const { data } = await axios.get("/api/user/booking", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (data.success) {
+        setbooking(data.bookings);
+        setisLoading(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setisLoading(false);
+    }
     setisLoading(false);
   };
 
   useEffect(() => {
-    getMyBooking();
-  });
+    if(user){
+      getMyBooking();
+    }
+  }, [user]);
   return !isLoading ? (
     <div className="relative px-6 md:px-16 lg:px-40 pt-30 md:pt-40 min-h-[80vh]">
       <BlurCircle top="100px" left="100px" />
@@ -32,7 +56,7 @@ const MyBookings = () => {
         >
           <div className="flex flex-col md:flex-row">
             <img
-              src={item.show.movie.poster_path}
+              src={Movie_Url+ item.show.movie.poster_path}
               alt
               className="md:max-w-45 aspect-video h-auto object-bottom object-cover rounded"
             />
@@ -52,7 +76,7 @@ const MyBookings = () => {
               <p className="text-2xl font-semibold mb-3">
                 {currency} {item.amount}
               </p>
-              {item.isPaid && (
+              {!item.isPaid && (
                 <button className="bg-primary px-4 py-1.5 mb-3 text-sm rounded-full font-medium cursor-pointer">
                   Pay Now
                 </button>

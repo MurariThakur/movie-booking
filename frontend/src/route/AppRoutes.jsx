@@ -1,39 +1,69 @@
-import React from "react";
-import { Route, Router, Routes } from "react-router-dom";
-import SeatLayout from "../pages/SeatLayout";
-import Favourite from "../pages/Favourite";
-import MyBookings from "../pages/MyBookings";
-import Home from "../pages/Home";
-import Movies from "../pages/Movies";
-import MovieDetails from "../pages/MovieDetails";
-import MainLayout from "../pages/MainLayout";
-import NotFound from "../pages/NotFound";
-import AdminLayout from "../pages/admin/Layout";
-import AddShows from "../pages/admin/AddShow";
-import ListBookings from "../pages/admin/ListBookings";
-import ListShows from "../pages/admin/ListShow";
-import Dashboard from "../pages/admin/Dashboard";
+import React, { lazy, Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
+import { SignIn } from "@clerk/clerk-react";
+import { useAppContext } from "../../context/AppContext";
+import ProtectedRoute from "../components/ProtectedRoute";
+import Loading from "../components/Loading";
+
+/* ---------- Lazy Imports ---------- */
+
+// Main pages
+const Home = lazy(() => import("../pages/Home"));
+const Movies = lazy(() => import("../pages/Movies"));
+const MovieDetails = lazy(() => import("../pages/MovieDetails"));
+const SeatLayout = lazy(() => import("../pages/SeatLayout"));
+const Favourite = lazy(() => import("../pages/Favourite"));
+const MyBookings = lazy(() => import("../pages/MyBookings"));
+const NotFound = lazy(() => import("../pages/NotFound"));
+const MainLayout = lazy(() => import("../pages/MainLayout"));
+
+// Admin pages
+const AdminLayout = lazy(() => import("../pages/admin/Layout"));
+const Dashboard = lazy(() => import("../pages/admin/Dashboard"));
+const AddShows = lazy(() => import("../pages/admin/AddShow"));
+const ListBookings = lazy(() => import("../pages/admin/ListBookings"));
+const ListShows = lazy(() => import("../pages/admin/ListShow"));
+
 const AppRoutes = () => {
+  const { user } = useAppContext();
+
   return (
-    <>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Home />} />
-          <Route path="movies" element={<Movies />} />
-          <Route path="/movies/:id" element={<MovieDetails />} />
-          <Route path="/movies/:id/:date" element={<SeatLayout />} />
-          <Route path="/my-bookings" element={<MyBookings />} />
-          <Route path="/favorite" element={<Favourite />} />
-        </Route>
-        <Route path="/admin/" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="add-shows" element={<AddShows />} />
-          <Route path="list-bookings" element={<ListBookings />} />
-          <Route path="list-shows" element={<ListShows />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </>
+    <Routes>
+      {/* ---------- USER ROUTES ---------- */}
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="movies" element={<Movies />} />
+        <Route path="movies/:id" element={<MovieDetails />} />
+        <Route path="movies/:id/:date" element={<SeatLayout />} />
+        <Route path="my-bookings" element={<MyBookings />} />
+        <Route path="/loading/:nextUrl" element={<Loading />} />
+        <Route path="favorite" element={<Favourite />} />
+      </Route>
+
+      {/* ---------- ADMIN ROUTES ---------- */}
+      <Route
+        path="/admin"
+        element={
+          user ? (
+            <ProtectedRoute>
+              <AdminLayout />
+            </ProtectedRoute>
+          ) : (
+            <div className="min-h-screen flex justify-center items-center">
+              <SignIn fallbackRedirectUrl="/admin" />
+            </div>
+          )
+        }
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="add-shows" element={<AddShows />} />
+        <Route path="list-bookings" element={<ListBookings />} />
+        <Route path="list-shows" element={<ListShows />} />
+      </Route>
+
+      {/* ---------- 404 ---------- */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 

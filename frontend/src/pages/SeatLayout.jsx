@@ -5,8 +5,10 @@ import { ArrowRightIcon, ClockIcon } from "lucide-react";
 import iosTimeFormat from "../libs/iosTimeFormat";
 import BlurCircle from "../components/BlurCircle";
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext";
 
 const SeatLayout = () => {
+  const { axios, getToken, user } = useAppContext();
   const topRows = ["A", "B"];
 
   const seatBlocks = [
@@ -19,17 +21,48 @@ const SeatLayout = () => {
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [show, setShow] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
+  const [occupiedSeats, setOccupiedSeats] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const showData = dummyShowsData.find((s) => s._id === id);
-    if (showData) {
-      setShow({
-        movie: showData,
-        dateTime: dummyDateTimeData,
+  const getShow = async () => {
+    try {
+      const token = await getToken({ template: "integration" });
+      if (!token) return;
+
+      const response = await axios.get(`api/show/all/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      setShow(response.data);
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+  const getOccupiedSeats = async () => {
+    try {
+      const response = await axios.get(
+        `api/booking/seats/${selectedTime.showId}`
+      );
+      if (response.data.success) setOccupiedSeats(response.data.occupiedSeats);
+      else {
+        toast.error("Failed to fetch occupied seats");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getShow();
   }, [id]);
+
+  useEffect(() => {
+    if (selectedTime) {
+      getOccupiedSeats();
+    }
+  }, [selectedTime]);
 
   const handleSeatClick = (seatId) => {
     if (!selectedTime) {
@@ -38,6 +71,9 @@ const SeatLayout = () => {
 
     if (!selectedSeats.includes(seatId) && selectedSeats.length >= 5) {
       return toast("You can only select 5 seats");
+    }
+    if (occupiedSeats.includes(seatId)) {
+      return toast.error("Seat already occupied");
     }
 
     setSelectedSeats((prev) =>
@@ -57,11 +93,12 @@ const SeatLayout = () => {
           <button
             key={seatId}
             onClick={() => handleSeatClick(seatId)}
-            className={`h-8 w-8 md:h-7 md:w-7 flex items-center justify-center rounded border border-primary/60 transition
+            className={`h-8 w-8 md:h-7 md:w-7 flex items-center justify-center rounded border border-primary/60 transition cursor-pointer
+              ${selectedSeats.includes(seatId) && "bg-primary text-white"}
               ${
-                selectedSeats.includes(seatId)
-                  ? "bg-primary text-white"
-                  : "hover:bg-primary/20"
+                occupiedSeats.includes(seatId) &&
+                "opacity-50 cursor-not-allowed"
+              }
               }`}
           >
             {seatId}
@@ -70,6 +107,40 @@ const SeatLayout = () => {
       })}
     </div>
   );
+
+  const bookTickets = async () => {
+    try {
+      if (!user) {
+        return toast.error("Please sign in to book tickets");
+      }
+      if (!selectedTime || selectedSeats.length === 0) {
+        return toast.error("Please select a time slot and at least one seat");
+      }
+      const token = await getToken({ template: "integration" });
+      if (!token) return;
+
+      const response = await axios.post(
+        `api/booking/create`,
+        {
+          showId: selectedTime.showId,
+          seleatedSeats: selectedSeats,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        window.location.href = response.data.url;
+      }
+      else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   if (!show) return <div className="text-center py-20">Loading...</div>;
 
@@ -115,7 +186,7 @@ const SeatLayout = () => {
 
         {/* HORIZONTAL SCROLL AREA */}
         <div className="w-full overflow-x-auto overflow-y-hidden">
-          <div className="min-w-[720px] mx-auto text-xs text-gray-300">
+          <div className="min-w-180 mx-auto text-xs text-gray-300">
             {/* A & B */}
             <div className="flex flex-col gap-3 mb-6">
               {topRows.map((row) => (
@@ -139,7 +210,7 @@ const SeatLayout = () => {
           </div>
         </div>
         <button
-          onClick={() => navigate("/my-bookings")}
+          onClick={bookTickets}
           className="flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer active:scale-95"
         >
           Proceed to Checkout

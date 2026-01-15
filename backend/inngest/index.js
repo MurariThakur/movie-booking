@@ -3,6 +3,7 @@ import user from "../models/user.js";
 import Booking from "../models/Booking.js";
 import Show from "../models/Show.js";
 import sendEmail from "../config/nodeMailer.js";
+import { clerkClient } from "@clerk/express";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "movie-booking" });
@@ -84,13 +85,22 @@ const sendBookingConfirmationEmail = inngest.createFunction(
           path: "movie",
           model: "Movie",
         },
-      })
-      .populate("user");
+      });
+
+    // Fetch user details from Clerk
+    const clerkUser = await clerkClient.users.getUser(booking.user);
+    const userName = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim() || 'User';
+    const userEmail = clerkUser.emailAddresses[0]?.emailAddress;
+
+    if (!userEmail) {
+      console.error('No email found for user:', booking.user);
+      return;
+    }
 
     await sendEmail({
-      to: booking.user.email,
+      to: userEmail,
       subject: `Payment confirmation : "${booking.show.movie.title}" booked !`,
-      body: `<h1>Hi ${booking.user.name},</h1>
+      body: `<h1>Hi ${userName},</h1>
         <p>Thank you for your payment. Your booking for the movie "<strong>${
           booking.show.movie.title
         }</strong>" has been confirmed.</p>

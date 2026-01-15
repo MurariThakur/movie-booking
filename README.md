@@ -100,19 +100,6 @@ A full-stack movie booking application that allows users to browse movies, book 
    npm run dev
    ```
 
-## 📱 Screenshots
-
-### User Interface
-- **Home Page**: Browse featured movies
-- **Movie Details**: View movie information and showtimes
-- **Seat Selection**: Interactive seat booking interface
-- **User Dashboard**: Manage bookings and favorites
-
-### Admin Panel
-- **Dashboard**: Analytics and statistics
-- **Movie Management**: Add shows and manage listings
-- **Booking Management**: View all user bookings
-
 ## 🏗️ Project Structure
 
 ```
@@ -157,18 +144,6 @@ movie-booking/
 - `GET /api/admin/all-shows` - Get all shows
 - `GET /api/admin/all-bookings` - Get all bookings
 
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🙏 Acknowledgments
 
 - [TMDB](https://www.themoviedb.org/) for movie data
@@ -179,6 +154,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <p>Made with ❤️ by Your Name</p>
-  <p>⭐ Star this repo if you found it helpful!</p>
+  <p>Made with ❤️ by Murari Thakur</p>
 </div>

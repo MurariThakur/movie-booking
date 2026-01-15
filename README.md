@@ -4,7 +4,7 @@ A full-stack movie booking application that allows users to browse movies, book 
 
 ## 🌐 Live Demo
 
-**🚀 [View Live Application](https://moviebookings-topaz.vercel.app/)**
+**🚀 <a href="https://moviebookings-topaz.vercel.app/" target="_blank">View Live Application</a>**
 
 *Experience the full functionality of the movie booking system with real-time seat selection, user authentication, and admin features.*
 
@@ -178,10 +178,10 @@ For testing purposes, you can use Stripe's test card numbers:
 
 ## 🙏 Acknowledgments
 
-- [TMDB](https://www.themoviedb.org/) for movie data
-- [Clerk](https://clerk.com/) for authentication
-- [Inngest](https://www.inngest.com/) for background jobs
-- [Lucide React](https://lucide.dev/) for icons
+- <a href="https://www.themoviedb.org/" target="_blank">TMDB</a> for movie data
+- <a href="https://clerk.com/" target="_blank">Clerk</a> for authentication
+- <a href="https://www.inngest.com/" target="_blank">Inngest</a> for background jobs
+- <a href="https://lucide.dev/" target="_blank">Lucide React</a> for icons
 
 ---
 

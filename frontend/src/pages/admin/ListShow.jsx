@@ -37,36 +37,42 @@ const ListShow = () => {
   return !loading ? (
     <>
       <Title text1="List" text2="Shows" />
-      <div className="max-w-4xl mt-6 overflow-x-auto">
-        <table className="w-full border-collapse rounded-md overflow-hidden text-nowrap">
-          <thead>
-            <tr className="bg-primary/20 text-left text-white">
-              <th className="p-2 font-medium pl-5">Movie Time</th>
-              <th className="p-2 font-medium pl-5">Show Time</th>
-              <th className="p-2 font-medium pl-5">Total Bookings</th>
-              <th className="p-2 font-medium pl-5">Earnings</th>
-            </tr>
-          </thead>
-          <tbody className="text-sm font-light">
-            {shows.map((show, index) => (
-              <tr
-                key={index}
-                className="border-b border-primary/10 bg-primary/5 even:bg-primary/10"
-              >
-                <td className="p-2 pl-5 min-w-45">{show.movie.title}</td>
-                <td className="p-2 ">{DateFormat(show.showDateTime)}</td>
-                <td className="p-2">
-                  {Object.keys(show.occupiedSeats).length}
-                </td>
-                <td className="p-2">
-                  {currency}
-                  {show.showPrice * Object.keys(show.occupiedSeats).length}
-                </td>
+      {shows.length > 0 ? (
+        <div className="max-w-4xl mt-6 overflow-x-auto">
+          <table className="w-full border-collapse rounded-md overflow-hidden text-nowrap">
+            <thead>
+              <tr className="bg-primary/20 text-left text-white">
+                <th className="p-2 font-medium pl-5">Movie Time</th>
+                <th className="p-2 font-medium pl-5">Show Time</th>
+                <th className="p-2 font-medium pl-5">Total Bookings</th>
+                <th className="p-2 font-medium pl-5">Earnings</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="text-sm font-light">
+              {shows.map((show, index) => (
+                <tr
+                  key={index}
+                  className="border-b border-primary/10 bg-primary/5 even:bg-primary/10"
+                >
+                  <td className="p-2 pl-5 min-w-45">{show.movie.title}</td>
+                  <td className="p-2 ">{DateFormat(show.showDateTime)}</td>
+                  <td className="p-2">
+                    {Object.keys(show.occupiedSeats).length}
+                  </td>
+                  <td className="p-2">
+                    {currency}
+                    {show.showPrice * Object.keys(show.occupiedSeats).length}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="text-center mt-20">
+          <p className="text-gray-400 text-lg">No shows available</p>
+        </div>
+      )}
     </>
   ) : (
     <Loading />

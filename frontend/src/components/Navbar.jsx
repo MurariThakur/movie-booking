@@ -43,22 +43,7 @@ const Navbar = () => {
         >
           Movies
         </Link>
-        <Link
-          onClick={() => {
-            scrollTo(0, 0), setIsMenuOpen(false);
-          }}
-          to=""
-        >
-          Theaters
-        </Link>
-        <Link
-          onClick={() => {
-            scrollTo(0, 0), setIsMenuOpen(false);
-          }}
-          to=""
-        >
-          Releases
-        </Link>
+
         {favoritesMovies &&  favoritesMovies.length > 0 && <Link
           onClick={() => {
             scrollTo(0, 0), setIsMenuOpen(false);

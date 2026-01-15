@@ -99,28 +99,52 @@ const sendBookingConfirmationEmail = inngest.createFunction(
 
     await sendEmail(
       userEmail,
-      `Payment confirmation : "${booking.show.movie.title}" booked !`,
-      `<h1>Hi ${userName},</h1>
-        <p>Thank you for your payment. Your booking for the movie "<strong>${
-          booking.show.movie.title
-        }</strong>" has been confirmed.</p>
-        <p><strong>Booking Details:</strong></p>
-        <ul>
-          <li><strong>Movie:</strong> ${booking.show.movie.title}</li>
-          <li><strong>Show:</strong> ${new Date(
-            booking.show.showDateTime
-          ).toLocaleDateString("en-US", {
-            timeZone: "Asia/Kolkata",
-          })}</li>
-          <li><strong>Time:</strong> ${new Date(
-            booking.show.showDateTime
-          ).toLocaleTimeString("en-US", {
-            timeZone: "Asia/Kolkata",
-          })}</li>
-          <li><strong>Seats:</strong> ${booking.bookedSeats.join(", ")}</li>
-          <li><strong>Amount:</strong> ${booking.amount}</li>
-        </ul>
-        <p>Best regards,<br>Movie Booking Team</p>`
+      `🎬 Booking Confirmed: ${booking.show.movie.title}`,
+      `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; text-align: center;">
+          <h1 style="color: white; margin: 0; font-size: 28px;">🎬 Booking Confirmed!</h1>
+        </div>
+        
+        <div style="background-color: white; padding: 30px; border-radius: 0 0 10px 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+          <h2 style="color: #333; margin-top: 0;">Hi ${userName},</h2>
+          <p style="color: #666; line-height: 1.6;">Thank you for your payment! Your booking for <strong style="color: #667eea;">${booking.show.movie.title}</strong> has been confirmed.</p>
+          
+          <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3 style="color: #333; margin-top: 0; border-bottom: 2px solid #667eea; padding-bottom: 10px;">📋 Booking Details</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 10px 0; color: #666;"><strong>🎥 Movie:</strong></td>
+                <td style="padding: 10px 0; color: #333;">${booking.show.movie.title}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #666;"><strong>📅 Date:</strong></td>
+                <td style="padding: 10px 0; color: #333;">${new Date(booking.show.showDateTime).toLocaleDateString("en-US", { timeZone: "Asia/Kolkata" })}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #666;"><strong>🕐 Time:</strong></td>
+                <td style="padding: 10px 0; color: #333;">${new Date(booking.show.showDateTime).toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" })}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #666;"><strong>💺 Seats:</strong></td>
+                <td style="padding: 10px 0; color: #333;">${booking.bookedSeats.join(", ")}</td>
+              </tr>
+              <tr style="border-top: 2px solid #ddd;">
+                <td style="padding: 15px 0 0 0; color: #666;"><strong>💰 Total Amount:</strong></td>
+                <td style="padding: 15px 0 0 0; color: #667eea; font-size: 20px; font-weight: bold;">₹${booking.amount}</td>
+              </tr>
+            </table>
+          </div>
+          
+          <p style="color: #666; line-height: 1.6; margin-top: 20px;">Please arrive 15 minutes before the show time. Enjoy your movie! 🍿</p>
+          
+          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; text-align: center; color: #999; font-size: 14px;">
+            <p style="margin: 5px 0;">Best regards,</p>
+            <p style="margin: 5px 0; font-weight: bold; color: #667eea;">Movie Booking Team</p>
+          </div>
+        </div>
+      </div>
+      `
     );
   }
 );

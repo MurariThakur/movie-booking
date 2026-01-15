@@ -21,7 +21,7 @@ const HeaderSection = () => {
       </div>
       <p className="max-w-md text-gray-300">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
 
-      <button onClick={()=>navigate('/movies')} className="flex items-center gap-1 px-6 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer">Explore Movies
+      <button onClick={()=>{scrollTo(0, 0); navigate('/movies')}} className="flex items-center gap-1 px-6 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer">Explore Movies
         <ArrowRight className="w-5 h-5"/>
       </button>
     </div>

@@ -6,6 +6,7 @@ import iosTimeFormat from "../libs/iosTimeFormat";
 import BlurCircle from "../components/BlurCircle";
 import toast from "react-hot-toast";
 import { useAppContext } from "../../context/AppContext";
+import Loading from "../components/Loading";
 
 const SeatLayout = () => {
   const { axios, getToken, user } = useAppContext();
@@ -142,7 +143,7 @@ const SeatLayout = () => {
     }
   };
 
-  if (!show) return <div className="text-center py-20">Loading...</div>;
+  if (!show) return <div className="text-center py-20"><Loading /></div>;
 
   return (
     <div className="flex flex-col md:flex-row px-4 md:px-16 lg:px-40 py-24">
@@ -211,7 +212,7 @@ const SeatLayout = () => {
         </div>
         <button
           onClick={bookTickets}
-          className="flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer active:scale-95"
+          className="z-40 flex items-center gap-1 mt-20 px-10 py-3 text-sm bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer active:scale-95"
         >
           Proceed to Checkout
           <ArrowRightIcon strokeWidth={3} className="w-4 h-4" />

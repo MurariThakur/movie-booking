@@ -14,7 +14,7 @@ const FeatureSection = () => {
         <BlurCircle top="0" right="-80px" />
         <p className="text-lg font-medium text-gray-300">Now Showing</p>
         <button
-          onClick={() => navigate("/movies")}
+          onClick={() => { scrollTo(0, 0); navigate("/movies"); }}
           className="group flex items-center gap-2 text-sm text-gray-300 cursor-pointer z-9999"
         >
           View All

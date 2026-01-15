@@ -97,10 +97,10 @@ const sendBookingConfirmationEmail = inngest.createFunction(
       return;
     }
 
-    await sendEmail({
-      to: userEmail,
-      subject: `Payment confirmation : "${booking.show.movie.title}" booked !`,
-      body: `<h1>Hi ${userName},</h1>
+    await sendEmail(
+      userEmail,
+      `Payment confirmation : "${booking.show.movie.title}" booked !`,
+      `<h1>Hi ${userName},</h1>
         <p>Thank you for your payment. Your booking for the movie "<strong>${
           booking.show.movie.title
         }</strong>" has been confirmed.</p>
@@ -120,8 +120,8 @@ const sendBookingConfirmationEmail = inngest.createFunction(
           <li><strong>Seats:</strong> ${booking.bookedSeats.join(", ")}</li>
           <li><strong>Amount:</strong> ${booking.amount}</li>
         </ul>
-        <p>Best regards,<br>Movie Booking Team</p>`,
-    });
+        <p>Best regards,<br>Movie Booking Team</p>`
+    );
   }
 );
 

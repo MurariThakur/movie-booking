@@ -7,7 +7,7 @@ import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
 import { useAppContext } from "../../context/AppContext";
 
 const Navbar = () => {
-  const {favoritesMovies} = useAppContext();
+  const { favoritesMovies, isAdmin } = useAppContext();
   const { user } = useUser();
   const { openSignIn } = useClerk();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,7 +19,7 @@ const Navbar = () => {
       </Link>
 
       <div
-        className={`max-md:absolute max-md:top-0 max-md:left-0 max-md:font-medium max-md:text-lg z-50 flex flex-col md:flex-row items-center max-md:justify-center gap-8 min-md:px-8 py-3 max-md:h-screen min-md:rounded-full backdrop-blur bg-black/70 md:bg-white/10 md:border border-gray-300/20 overflow-hidden transition-[width] duration-300 ${
+        className={` max-md:absolute max-md:top-0 max-md:left-0 max-md:font-medium max-md:text-lg z-50 flex flex-col md:flex-row items-center max-md:justify-center gap-8 min-md:px-8 py-3 max-md:h-screen min-md:rounded-full backdrop-blur bg-black/70 md:bg-white/10 md:border border-gray-300/20 overflow-hidden transition-[width] duration-300 ${
           isMenuOpen ? "max-md:w-full" : "max-md:w-0"
         } `}
       >
@@ -43,15 +43,27 @@ const Navbar = () => {
         >
           Movies
         </Link>
-
-        {favoritesMovies &&  favoritesMovies.length > 0 && <Link
-          onClick={() => {
-            scrollTo(0, 0), setIsMenuOpen(false);
-          }}
-          to="/favorite"
-        >
-          Favorites
-        </Link>}
+        {favoritesMovies && favoritesMovies.length > 0 && (
+          <Link
+            onClick={() => {
+              scrollTo(0, 0), setIsMenuOpen(false);
+            }}
+            to="/favorite"
+          >
+            Favorites
+          </Link>
+        )}
+        {isAdmin && (
+          <Link
+            onClick={() => {
+              scrollTo(0, 0);
+              setIsMenuOpen(false);
+            }}
+            to="/admin"
+          >
+            Admin
+          </Link>
+        )}
       </div>
       <div className="flex items-center gap-8">
         <SearchIcon className="max-md:hidden w-6 h-6 cursor-pointer" />

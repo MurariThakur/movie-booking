@@ -26,7 +26,8 @@ const DateSelect = ({ dateTime, id }) => {
             <ChevronLeftIcon width={28} />
             <span className="grid grid-cols-3 md:flex flex-wrap md:max-w-lg gap-4">
               {Object.keys(dateTime).map((date) => (
-                <button onClick={() => setSelected(date)}
+                <button
+                  onClick={() => setSelected(date)}
                   key={date}
                   className={`flex flex-col  items-center justify-center h-14 w-14 aspect-square rounded cursor-pointer ${
                     selected === date
@@ -50,7 +51,7 @@ const DateSelect = ({ dateTime, id }) => {
         </div>
         <button
           onClick={onBookHandler}
-          className="bg-primary hover:bg-primary/90 text-white px-8 py-2 mt-6  rounded transition-all cursor-pointer"
+          className="z-40 bg-primary hover:bg-primary/90 text-white px-8 py-2 mt-6  rounded transition-all cursor-pointer"
         >
           Book Now
         </button>

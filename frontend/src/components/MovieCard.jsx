@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import TimeFormat from "../libs/TimeFormat";
 import { useAppContext } from "../../context/AppContext";
 const MovieCard = ({ movie }) => {
-  const {Movie_Url} = useAppContext();
+  const { Movie_Url } = useAppContext();
   const navigate = useNavigate();
   return (
     <div className="flex flex-col justify-between p-3 bg-gray-800 rounded-2xl hover:-translate-y-1 transition duration-300 w-66">
@@ -12,7 +12,7 @@ const MovieCard = ({ movie }) => {
           navigate(`/movies/${movie._id || movie.id}`);
           scrollTo(0, 0);
         }}
-        src={Movie_Url+movie.backdrop_path}
+        src={Movie_Url + movie.backdrop_path}
         alt={movie.title}
         className="rounded-lg h-52 w-full object-cover object-right-bottom cursor-pointer"
       />
@@ -22,7 +22,8 @@ const MovieCard = ({ movie }) => {
         {movie.genres
           .slice(0, 2)
           .map((genre) => genre.name)
-          .join(" | ")} - {TimeFormat(movie.runtime)}
+          .join(" | ")}{" "}
+        - {TimeFormat(movie.runtime)}
       </p>
 
       <div className="flex items-center justify-between mt-4 pb-3">
@@ -31,7 +32,7 @@ const MovieCard = ({ movie }) => {
             navigate(`/movies/${movie._id || movie.id}`);
             scrollTo(0, 0);
           }}
-          className="px-4 py-2 text-xs bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer"
+          className="z-40 px-4 py-2 text-xs bg-primary hover:bg-primary-dull transition rounded-full font-medium cursor-pointer"
         >
           Buy TIckets
         </button>

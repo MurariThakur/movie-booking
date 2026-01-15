@@ -1,4 +1,5 @@
 import {
+  HomeIcon,
   LayoutDashboardIcon,
   ListCollapseIcon,
   ListIcon,
@@ -34,6 +35,11 @@ const AdminSidebar = () => {
       name: "List Bookings",
       icon: ListCollapseIcon,
       link: "/admin/list-bookings",
+    },
+    {
+      name: "Home",
+      icon: HomeIcon,
+      link: "/",
     },
   ];
   return (

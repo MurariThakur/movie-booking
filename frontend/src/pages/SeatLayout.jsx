@@ -5,8 +5,10 @@ import { ArrowRightIcon, ClockIcon } from "lucide-react";
 import iosTimeFormat from "../libs/iosTimeFormat";
 import BlurCircle from "../components/BlurCircle";
 import toast from "react-hot-toast";
+import { useAppContext } from "../../context/AppContext";
 
 const SeatLayout = () => {
+  const { axios, getToken, user } = useAppContext();
   const topRows = ["A", "B"];
 
   const seatBlocks = [
@@ -21,14 +23,24 @@ const SeatLayout = () => {
   const [selectedTime, setSelectedTime] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const showData = dummyShowsData.find((s) => s._id === id);
-    if (showData) {
-      setShow({
-        movie: showData,
-        dateTime: dummyDateTimeData,
+  const getShow = async () => {
+    try {
+      const token = await getToken({ template: "integration" });
+      if (!token) return;
+
+      const response = await axios.get(`api/show/all/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      setShow(response.data);
+    } catch (error) {
+      console.log(error);
     }
+  };
+
+  useEffect(() => {
+    getShow();
   }, [id]);
 
   const handleSeatClick = (seatId) => {

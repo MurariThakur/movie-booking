@@ -26,26 +26,46 @@ const addShow = async (req, res) => {
     const { movieId, showPrice, showInput } = req.body;
 
     // Extract movie ID from the movie object
-    const movieIdValue = typeof movieId === 'object' ? movieId.id : movieId;
-    
+    const movieIdValue = typeof movieId === "object" ? movieId.id : movieId;
+
     let movie = await Movie.findById(movieIdValue);
     if (!movie) {
       // If movieId is the full movie object, use it to create the movie
-      if (typeof movieId === 'object' && movieId.id) {
+      if (typeof movieId === "object" && movieId.id) {
+        // Fetch full movie details from TMDB to get tagline and runtime
+        const [movieDetailsResonse, movieCreditsResponse] = await Promise.all([
+          axios.get(`https://api.themoviedb.org/3/movie/${movieId.id}`, {
+            headers: {
+              Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+            },
+          }),
+          axios.get(
+            `https://api.themoviedb.org/3/movie/${movieId.id}/credits`,
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+              },
+            }
+          ),
+        ]);
+
+        const movieDetailsData = movieDetailsResonse.data;
+        const movieCreditData = movieCreditsResponse.data;
+
         const movieDetails = {
           _id: movieId.id.toString(),
-          title: movieId.title,
-          overview: movieId.overview,
-          poster_path: movieId.poster_path,
-          backdrop_path: movieId.backdrop_path,
-          genres: movieId.genre_ids || [],
-          casts: [],
-          release_date: movieId.release_date,
-          original_language: movieId.original_language,
-          tagline: movieId.tagline || "",
-          vote_average: movieId.vote_average,
-          vote_count: movieId.vote_count,
-          runtime: movieId.runtime || 0,
+          title: movieDetailsData.title,
+          overview: movieDetailsData.overview,
+          poster_path: movieDetailsData.poster_path,
+          backdrop_path: movieDetailsData.backdrop_path,
+          genres: movieDetailsData.genres || [],
+          casts: movieCreditData.cast,
+          release_date: movieDetailsData.release_date,
+          original_language: movieDetailsData.original_language,
+          tagline: movieDetailsData.tagline || "",
+          vote_average: movieDetailsData.vote_average,
+          vote_count: movieDetailsData.vote_count,
+          runtime: movieDetailsData.runtime || 0,
         };
         movie = await Movie.create(movieDetails);
       } else {
@@ -56,11 +76,14 @@ const addShow = async (req, res) => {
               Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
             },
           }),
-          axios.get(`https://api.themoviedb.org/3/movie/${movieIdValue}/credits`, {
-            headers: {
-              Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
-            },
-          }),
+          axios.get(
+            `https://api.themoviedb.org/3/movie/${movieIdValue}/credits`,
+            {
+              headers: {
+                Authorization: `Bearer ${process.env.TMDB_API_KEY}`,
+              },
+            }
+          ),
         ]);
 
         const movieDetailsData = movieDetailsResonse.data;
@@ -111,7 +134,9 @@ const addShow = async (req, res) => {
 
 const getShows = async (req, res) => {
   try {
-    const shows = await Show.find({})
+    const shows = await Show.find({
+      showDateTime: { $gte: new Date() },
+    })
       .populate("movie")
       .sort({ showDateTime: -1 });
 

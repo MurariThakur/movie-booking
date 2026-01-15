@@ -64,7 +64,7 @@ export const AppProvider = ({ children }) => {
       });
 
       if (data.success) {
-        setFavoritesMovies(data.favorites);
+        setFavoritesMovies(data.movie);
       }
     } catch (error) {
       console.error(error);
@@ -81,7 +81,6 @@ export const AppProvider = ({ children }) => {
       fetchFavoriteMovies();
     }
   }, [user]);
-
   return (
     <AppContext.Provider
       value={{

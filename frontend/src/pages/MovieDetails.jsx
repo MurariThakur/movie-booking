@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { dummyDateTimeData, dummyShowsData } from "../assets/assets";
@@ -7,18 +8,51 @@ import TimeFormat from "../libs/TimeFormat";
 import DateSelect from "../components/DateSelect";
 import MovieCard from "../components/MovieCard";
 import Loading from "../components/Loading";
+import { useAppContext } from "../../context/AppContext";
 
 const MovieDetails = () => {
+  const {
+    shows,
+    Movie_Url,
+    axios,
+    getToken,
+    user,
+    fetchFavoriteMovies,
+    favoritesMovies,
+  } = useAppContext();
   const { id } = useParams();
   const [show, setshow] = useState(null);
   const navigate = useNavigate();
   const getShow = async () => {
-    const show = dummyShowsData.find((show) => show._id === id);
-    if (show) {
-      setshow({
-        movie: show,
-        dateTime: dummyDateTimeData,
-      });
+    try {
+      const response = await axios.get(`api/show/all/${id}`);
+      setshow(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFavouriteMovie = async () => {
+    try {
+      if (!user) {
+        return toast.error("Please Login to add to favorites");
+      }
+      const token = await getToken({ template: "integration" });
+      const response = await axios.post(
+        "/api/user/update-favorite/",
+        { movieId: id },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        await fetchFavoriteMovies();
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -29,7 +63,7 @@ const MovieDetails = () => {
     <div className="px-6 md:px-6 lg:px-40 pt-30 md:pt-50">
       <div className="flex flex-col md:flex-row gap-8 max-w-6xl mx-auto">
         <img
-          src={show.movie.poster_path}
+          src={Movie_Url + show.movie.poster_path}
           alt=""
           className="max-md:mx-auto rounded-xl h-104 max-w-70 object-cover"
         />
@@ -62,28 +96,46 @@ const MovieDetails = () => {
             >
               Buy Tickets
             </a>
-            <button className="bg-gray-700 p-2.5 rounded-full transition cursor-pointer active:scale-95">
-              <Heart className={`w-5 h-5`} />
+            <button
+              onClick={handleFavouriteMovie}
+              className="bg-gray-700 p-2.5 rounded-full transition cursor-pointer active:scale-95"
+            >
+              <Heart
+                className={`w-5 h-5 ${
+                  favoritesMovies?.find((movie) => movie._id === id)
+                    ? "fill-primary text-primary"
+                    : ""
+                }`}
+              />
             </button>
           </div>
         </div>
       </div>
 
-      <p className="text-lg font-medium mt-20">Your Favourite Cast</p>
-      <div className="overflow-x-auto no-scrollbar mt-8 pb-4">
-        <div className="flex items-center gap-4 w-max px-4">
-          {show.movie.casts.slice(0, 12).map((cast, index) => (
-            <div key={index} className="flex flex-col items-center text-center">
-              <img
-                src={cast.profile_path}
-                alt=""
-                className="rounded-full h-20 md:h-20 aspect-square object-cover"
-              />
-              <p className="font-medium  text-xs mt-3">{cast.name}</p>
+      {show.movie?.casts?.length > 0 && (
+        <>
+          <p className="text-lg font-medium mt-20">Your Favourite Cast</p>
+
+          <div className="overflow-x-auto no-scrollbar mt-8 pb-4">
+            <div className="flex items-center gap-4 w-max px-4">
+              {show.movie.casts.slice(0, 12).map((cast, index) => (
+                <div
+                  key={index}
+                  className="flex flex-col items-center text-center"
+                >
+                  <img
+                    src={Movie_Url + cast.profile_path}
+                    alt={cast.name}
+                    className="rounded-full h-20 aspect-square object-cover"
+                  />
+                  <p className="font-medium text-xs mt-3">{cast.name}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
+
       <DateSelect dateTime={show.dateTime} id={id} />
 
       <p className="text-lg font-medium mt-20 mb-8">You May Also Like</p>

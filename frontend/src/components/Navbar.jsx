@@ -4,8 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { MenuIcon, SearchIcon, TicketIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import { useAppContext } from "../../context/AppContext";
 
 const Navbar = () => {
+  const {favoritesMovies} = useAppContext();
   const { user } = useUser();
   const { openSignIn } = useClerk();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -57,14 +59,14 @@ const Navbar = () => {
         >
           Releases
         </Link>
-        <Link
+        {favoritesMovies &&  favoritesMovies.length > 0 && <Link
           onClick={() => {
             scrollTo(0, 0), setIsMenuOpen(false);
           }}
           to="/favorite"
         >
           Favorites
-        </Link>
+        </Link>}
       </div>
       <div className="flex items-center gap-8">
         <SearchIcon className="max-md:hidden w-6 h-6 cursor-pointer" />

@@ -5,8 +5,8 @@ import Movie from "../models/Movie.js";
 
 const getUserBooking = async (req, res) => {
   try {
-    const user = req.auth.userId;
-    const bookings = await Booking.find({ user })
+    const { userId } = req.auth();
+    const bookings = await Booking.find({ user: userId })
       .populate({
         path: "show",
         populate: {
@@ -24,7 +24,7 @@ const getUserBooking = async (req, res) => {
 const UpdateFavorite = async (req, res) => {
   try {
     const { movieId } = req.body;
-    const userId = req.auth.userId;
+    const { userId } = req.auth();
     const user = await clerkClient.users.getUser(userId);
 
     if (!user.privateMetadata.favourites) {
@@ -52,9 +52,13 @@ const UpdateFavorite = async (req, res) => {
 
 const getFavorites = async (req, res) => {
   try {
-    const userId = req.auth.userId;
+    const { userId } = req.auth();
+    if (!userId) {
+      return res.json({ success: false, error: "User not authenticated" });
+    }
+    
     const user = await clerkClient.users.getUser(userId);
-    const favourites = user.privateMetadata.favourites;
+    const favourites = user.privateMetadata.favourites || [];
     const movie = await Movie.find({ _id: { $in: favourites } });
     res.json({ success: true, movie });
   } catch (error) {

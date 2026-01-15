@@ -132,8 +132,7 @@ const SeatLayout = () => {
         }
       );
       if (response.data.success) {
-        toast.success(response.data.message);
-        navigate("/my-bookings");
+        window.location.href = response.data.url;
       }
       else {
         toast.error(response.data.message);

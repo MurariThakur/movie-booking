@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { SignIn } from "@clerk/clerk-react";
 import { useAppContext } from "../../context/AppContext";
 import ProtectedRoute from "../components/ProtectedRoute";
+import Loading from "../components/Loading";
 
 /* ---------- Lazy Imports ---------- */
 
@@ -35,6 +36,7 @@ const AppRoutes = () => {
         <Route path="movies/:id" element={<MovieDetails />} />
         <Route path="movies/:id/:date" element={<SeatLayout />} />
         <Route path="my-bookings" element={<MyBookings />} />
+        <Route path="/loading/:nextUrl" element={<Loading />} />
         <Route path="favorite" element={<Favourite />} />
       </Route>
 

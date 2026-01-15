@@ -14,10 +14,9 @@ const checkSeatAvailability = async (showId, seleatedSeats) => {
 
 const createBooking = async (req, res) => {
   try {
-    const { userId } = req.auth;
+    const { userId } = req.auth();
 
     const { showId, seleatedSeats } = req.body;
-    const { origin } = req.headers;
 
     const isAvailable = await checkSeatAvailability(showId, seleatedSeats);
 
@@ -29,14 +28,14 @@ const createBooking = async (req, res) => {
 
     const showData = await Show.findById(showId).populate("movie");
 
-    const booking = new Booking.create({
+    const booking = await Booking.create({
       user: userId,
       show: showId,
       amount: showData.showPrice * seleatedSeats.length,
       bookedSeats: seleatedSeats,
     });
 
-    seleatedSeats.map((seat) => {
+    seleatedSeats.forEach((seat) => {
       showData.occupiedSeats[seat] = userId;
     });
 
@@ -58,7 +57,7 @@ const getOccupiedSeats = async (req, res) => {
   try {
     const { showId } = req.params;
     const showData = await Show.findById(showId);
-    const occupiedSeats = object.keys(showData.occupiedSeats);
+    const occupiedSeats = Object.keys(showData.occupiedSeats);
     res.json({ success: true, occupiedSeats: occupiedSeats });
   } catch (error) {
     console.error(error.message);
